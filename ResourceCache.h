@@ -14,6 +14,7 @@
 	NSMutableArray *directoryContents;
 }
 
++ (ResourceCache *)cacheWithIdentifier:(NSString *)anIdentifier;
 - (id)initWithIdentifier:(NSString *)anIdentifier;
 - (void)setData:(NSData *)data forURL:(NSURL *)anURL etag:(NSString *)etag;
 - (NSData *)dataForURL:(NSURL *)anURL preliminary:(BOOL)preliminary etag:(NSString **)etagRef;

@@ -13,6 +13,11 @@
 
 @implementation ResourceCache
 
++ (ResourceCache *)cacheWithIdentifier:(NSString *)anIdentifier
+{
+	return [[[ResourceCache alloc] initWithIdentifier:anIdentifier] autorelease];
+}
+
 + (NSString *)cachesDirectory
 {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
