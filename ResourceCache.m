@@ -134,12 +134,12 @@
 	[directoryContents release];
 	NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self cachedDataDirectoryPath] error:NULL];
 	directoryContents = [contents mutableCopy];
-	NSLog(@">>> directoryContents:%@", directoryContents);
+//	NSLog(@">>> directoryContents:%@", directoryContents);
 }
 
 - (void)endLoading
 {
-	NSLog(@"<<< directoryContents:%@", directoryContents);
+//	NSLog(@"<<< directoryContents:%@", directoryContents);
 	for (NSString *fileName in directoryContents) {
 		NSString *filePath = [[self cachedDataDirectoryPath] stringByAppendingPathComponent:fileName];
 		[[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];

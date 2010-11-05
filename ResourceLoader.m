@@ -81,7 +81,7 @@
 
 - (NSData *)dataForURL:(NSURL *)dataURL preliminary:(BOOL)preliminary
 {
-	NSLog(@"%@ dataForURL:%@ preliminary:%d", self, dataURL, preliminary);
+//	NSLog(@"%@ dataForURL:%@ preliminary:%d", self, dataURL, preliminary);
 	NSString *etag = nil;
 	NSData *data = [self.resourceCache dataForURL:dataURL preliminary:preliminary etag:&etag];
 	
