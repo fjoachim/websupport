@@ -23,6 +23,7 @@ typedef enum {
 	NSString *responseContentType;
 	NSInteger httpResponseStatusCode;
     NSMutableData *responseData;
+	NSURLConnection *URLConnection;
 	ResourceLoaderResponseFormat responseFormat;
 	ResourceCache *resourceCache;
 	id<ResourceLoaderDelegate> delegate;
@@ -35,6 +36,7 @@ typedef enum {
 + (NSData *)dataForURL:(NSURL *)dataURL delegate:(id<ResourceLoaderDelegate>)delegate  preliminary:(BOOL)preliminary resourceCache:(ResourceCache *)resourceCache;
 + (UIImage *)imageForURL:(NSURL *)imageURL delegate:(id<ResourceLoaderDelegate>)delegate preliminary:(BOOL)preliminary resourceCache:(ResourceCache *)resourceCache;
 - (void)loadRequest:(NSURLRequest *)request;
+- (void)stopLoading;
 - (NSData *)dataForURL:(NSURL *)dataURL preliminary:(BOOL)preliminary;
 - (UIImage *)imageForURL:(NSURL *)imageURL preliminary:(BOOL)preliminary;
 
@@ -43,6 +45,7 @@ typedef enum {
 
 @protocol ResourceLoaderDelegate <NSObject>
 
+- (BOOL)resourceLoader:(ResourceLoader *)loader shouldStartLoadWithRequest:(NSURLRequest *)request;
 - (void)resourceLoaderDidFailLoad;
 - (void)resourceLoaderDidReturnNotModifiedData;
 

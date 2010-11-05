@@ -69,8 +69,15 @@
 
 - (void)loadRequest:(NSURLRequest *)request
 {
-	[self retain];
-	[NSURLConnection connectionWithRequest:request delegate:self];
+	if ([self.delegate resourceLoader:self shouldStartLoadWithRequest:request]) {
+		[self retain];
+		URLConnection = [NSURLConnection connectionWithRequest:request delegate:self];
+	}
+}
+
+- (void)stopLoading
+{
+	[URLConnection cancel];
 }
 
 - (UIImage *)imageForURL:(NSURL *)imageURL preliminary:(BOOL)preliminary
@@ -126,6 +133,7 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
+	URLConnection = nil;
 	if (httpResponseStatusCode >= 200 && httpResponseStatusCode < 300) {
 		[self.resourceCache setData:self.responseData forURL:self.responseURL etag:self.responseEtag];
 		if (self.delegate) {
@@ -151,6 +159,7 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
+	URLConnection = nil;
 	[self.delegate resourceLoaderDidFailLoad];
 	[self release];
 }
