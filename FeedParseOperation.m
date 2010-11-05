@@ -8,12 +8,15 @@
 
 #import "FeedParseOperation.h"
 
-static NSString *kItemStr  = @"item";
-static NSString *kImageStr = @"image";
+static NSString *kImageStr   = @"image";
+static NSString *kChannelStr = @"channel";
+static NSString *kItemStr    = @"item";
 
 @interface FeedParseOperation ()
 @property (nonatomic, assign) id <FeedParseOperationDelegate> delegate;
 @property (nonatomic, retain) NSData *dataToParse;
+@property (nonatomic, copy) NSString *channelTitle;
+@property (nonatomic, copy) NSString *channelDescription;
 @property (nonatomic, retain) NSMutableDictionary *workingImage;
 @property (nonatomic, retain) NSMutableArray *workingArray;
 @property (nonatomic, retain) NSMutableDictionary *workingEntry;
@@ -26,7 +29,7 @@ static NSString *kImageStr = @"image";
 @implementation FeedParseOperation
 
 @synthesize elementsToParse;
-@synthesize delegate, dataToParse, workingImage, workingArray, workingEntry, workingPropertyString, workingItemAttributes, storingCharacterData;
+@synthesize delegate, dataToParse, channelTitle, channelDescription, workingImage, workingArray, workingEntry, workingPropertyString, workingItemAttributes, storingCharacterData;
 
 #pragma mark -
 #pragma mark Object Lifecycle
@@ -50,6 +53,8 @@ static NSString *kImageStr = @"image";
 	[workingItemAttributes release];
     [workingArray release];
 	[workingImage release];
+	[channelDescription release];
+	[channelTitle release];
     
     [super dealloc];
 }
@@ -76,6 +81,8 @@ static NSString *kImageStr = @"image";
 		[self performSelectorOnMainThread:@selector(notifyDidFinishParsing) withObject:nil waitUntilDone:YES];
     }
     
+	self.channelTitle = nil;
+	self.channelDescription = nil;
 	self.workingImage = nil;
     self.workingArray = nil;
     self.workingPropertyString = nil;
@@ -88,7 +95,7 @@ static NSString *kImageStr = @"image";
 
 - (void)notifyDidFinishParsing
 {
-	[self.delegate didFinishParsing:self.workingArray image:self.workingImage];
+	[self.delegate didFinishParsing:self.workingArray title:self.channelDescription image:self.workingImage];
 }
 
 #pragma mark -
@@ -101,6 +108,8 @@ static NSString *kImageStr = @"image";
     } else if ([elementName isEqualToString:kImageStr]) {
 		inImageElement = YES;
 		self.workingEntry = [NSMutableDictionary dictionaryWithCapacity:4];
+	} else if ([elementName isEqualToString:kChannelStr]) {
+		inChannelElement = YES;
 	}
 	
 	if (self.workingEntry) {
@@ -110,15 +119,21 @@ static NSString *kImageStr = @"image";
 		} else {
 			storingCharacterData = [elementsToParse containsObject:elementName];
 		}
+	} else if (inChannelElement) {
+		storingCharacterData = [[NSArray arrayWithObjects:@"title", @"description", nil] containsObject:elementName];
 	}
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName
 {
+	NSString *trimmedString = nil;
+	if (storingCharacterData) {
+		trimmedString = [workingPropertyString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		[workingPropertyString setString:@""];  // clear the string for next time
+	}
+	
     if (self.workingEntry) {
-        if (storingCharacterData) {
-            NSString *trimmedString = [workingPropertyString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-            [workingPropertyString setString:@""];  // clear the string for next time
+        if (trimmedString) {
 			id entryObject = [self.delegate objectForElement:elementName text:trimmedString attributes:self.workingItemAttributes];
 			if (entryObject == nil) {
 				entryObject = trimmedString;
@@ -132,6 +147,12 @@ static NSString *kImageStr = @"image";
 			self.workingImage = self.workingEntry;
 			self.workingEntry = nil;
 			inImageElement = NO;
+		}
+	} else if (trimmedString) {
+		if ([elementName isEqualToString:@"title"]) {
+			self.channelTitle = trimmedString;
+		} else if ([elementName isEqualToString:@"description"]) {
+			self.channelDescription = trimmedString;
 		}
 	}
 }

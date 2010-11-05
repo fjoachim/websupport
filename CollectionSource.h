@@ -16,6 +16,7 @@
 @interface CollectionSource : NSObject <ResourceLoaderDelegate, FeedParseOperationDelegate> {
     NSOperationQueue *queue;
 	NSDictionary *imageDict;
+	NSString *title;
 	NSArray *itemList;
 	NSURL *sourceURL;
 	BOOL preliminary;
@@ -25,6 +26,7 @@
 
 @property (nonatomic, retain) NSOperationQueue *queue;
 @property (nonatomic, retain) NSDictionary *imageDict;
+@property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSArray *itemList;
 @property (nonatomic, retain) ResourceCache *resourceCache;
 @property (nonatomic, readonly) BOOL preliminary;

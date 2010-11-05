@@ -15,6 +15,8 @@
     
     NSData				*dataToParse;
     
+	NSString			*channelTitle;
+	NSString			*channelDescription;
     NSMutableDictionary *workingImage;
     NSMutableArray		*workingArray;
     NSMutableDictionary *workingEntry;
@@ -22,6 +24,7 @@
 	NSDictionary		*workingItemAttributes;
     NSArray				*elementsToParse;
     BOOL				storingCharacterData;
+	BOOL				inChannelElement;
 	BOOL				inImageElement;
 }
 
@@ -33,6 +36,6 @@
 
 @protocol FeedParseOperationDelegate <NSObject>
 - (id)objectForElement:(NSString *)elementName text:(NSString *)nodeText attributes:(NSDictionary *)attributeDict;
-- (void)didFinishParsing:(NSArray *)itemList image:(NSDictionary *)imageDict;
+- (void)didFinishParsing:(NSArray *)itemList title:(NSString *)aTitle image:(NSDictionary *)imageDict;
 - (void)parseErrorOccurred:(NSError *)error;
 @end

@@ -12,7 +12,7 @@
 
 @implementation CollectionSource
 
-@synthesize queue, imageDict, itemList, preliminary, resourceCache, delegate;
+@synthesize queue, title, imageDict, itemList, preliminary, resourceCache, delegate;
 
 #pragma mark -
 #pragma mark Object lifecycle
@@ -91,8 +91,9 @@
 	return object;
 }
 
-- (void)didFinishParsing:(NSArray *)anItemList image:(NSDictionary *)anImageDict
+- (void)didFinishParsing:(NSArray *)anItemList title:(NSString *)aTitle image:(NSDictionary *)anImageDict
 {
+	self.title = aTitle;
 	self.imageDict = anImageDict;
 	self.itemList = anItemList;
 	[self.delegate collectionSourceDidRefresh:self];
