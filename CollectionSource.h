@@ -21,6 +21,7 @@
 	NSURL *sourceURL;
 	BOOL preliminary;
 	ResourceCache *resourceCache;
+	ResourceLoader *resourceLoader;
 	id<CollectionSourceDelegate> delegate;
 }
 

@@ -29,6 +29,7 @@
 
 - (void)dealloc
 {
+	[resourceLoader stopLoading];
 	self.itemList = nil;
 	[sourceURL release];
 	[super dealloc];
@@ -62,20 +63,29 @@
 #pragma mark -
 #pragma mark ResourceLoaderDelegate methods
 
+- (BOOL)resourceLoader:(ResourceLoader *)loader shouldStartLoadWithRequest:(NSURLRequest *)request
+{
+	resourceLoader = loader;
+	return YES;
+}
+
 - (void)resourceLoaderDidFinishLoadingData:(NSData *)data withMIMEType:(NSString *)MIMEType
 {
 	preliminary = NO;
+	resourceLoader = nil;
     [self parseData:data];
 }
 
 - (void)resourceLoaderDidReturnNotModifiedData
 {
 	preliminary = NO;
+	resourceLoader = nil;
 	[self.delegate collectionSourceDidRefresh:self];
 }
 
 - (void)resourceLoaderDidFailLoad
 {
+	resourceLoader = nil;
 	[self.delegate collectionSourceRefreshDidFail:self];
 }
 

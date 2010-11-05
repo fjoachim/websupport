@@ -28,6 +28,7 @@
 
 - (void)dealloc
 {
+	[resourceLoader stopLoading];
     [super dealloc];
 }
 
@@ -49,19 +50,26 @@
 #pragma mark -
 #pragma mark ResourceLoaderDelegate methods
 
+- (BOOL)resourceLoader:(ResourceLoader *)loader shouldStartLoadWithRequest:(NSURLRequest *)request
+{
+	resourceLoader = loader;
+	return YES;
+}
+
 - (void)resourceLoaderDidFinishLoadingImage:(UIImage *)anImage
 {
+	resourceLoader = nil;
 	self.image = anImage;
 }
 
 - (void)resourceLoaderDidReturnNotModifiedData
 {
-	
+	resourceLoader = nil;	
 }
 
 - (void)resourceLoaderDidFailLoad
 {
-	
+	resourceLoader = nil;	
 }
 
 @end

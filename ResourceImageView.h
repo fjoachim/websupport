@@ -15,6 +15,7 @@
 	NSURL *imageURL;
 	BOOL preliminary;
 	ResourceCache *resourceCache;	
+	ResourceLoader *resourceLoader;
 }
 
 @property (nonatomic, copy) NSURL *imageURL;
